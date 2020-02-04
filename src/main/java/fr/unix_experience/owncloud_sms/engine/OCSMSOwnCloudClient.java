@@ -46,7 +46,7 @@ public class OCSMSOwnCloudClient {
 		_serverAPIVersion = 1;
 
 		AccountManager accountManager = AccountManager.get(context);
-		String ocURI = accountManager.getUserData(account, "ocURI");
+		String ocURI = accountManager.getUserData(account, "oc_base_url");
 		if (ocURI == null) {
 			throw new IllegalStateException(context.getString(R.string.err_sync_account_unparsable));
 		}
@@ -54,7 +54,7 @@ public class OCSMSOwnCloudClient {
 		try {
 			URL serverURL = new URL(ocURI);
 			_http = new OCHttpClient(context,
-					serverURL, accountManager.getUserData(account, "ocLogin"),
+					serverURL, accountManager.getUserData(account, "email_address"),
 					accountManager.getPassword(account));
 		} catch (MalformedURLException e) {
 			throw new IllegalStateException(context.getString(R.string.err_sync_account_unparsable));
