@@ -20,6 +20,7 @@ package fr.unix_experience.owncloud_sms.observers;
 import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.os.Handler;
@@ -47,6 +48,11 @@ public class SmsObserver extends ContentObserver implements ASyncSMSSync {
                 PermissionID.REQUEST_SMS)) {
             return;
         }
+		AccountManager am = AccountManager.get(_context);
+		Account account = am.getAccountsByType(_context.getString(R.string.account_type))[0];
+		if(!ContentResolver.isSyncActive(account, _context.getString(R.string.account_authority))){
+			return;
+		}
 
 		super.onChange(selfChange);
 		Log.i(SmsObserver.TAG, "onChange SmsObserver");
