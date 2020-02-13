@@ -129,6 +129,15 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".broadcast_receivers.SmsSenderIntentReceiver"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="sms_sent" />
+
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".activities.LoginActivity"
             android:label="@string/title_activity_login"

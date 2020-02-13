@@ -58,7 +58,13 @@ public class AndroidSmsFetcher {
 					entry.type,
 					entry.date,
 					entry.address,
+					entry.card_number,
+					entry.card_slot,
+					entry.icc_id,
+					entry.device_name,
+					entry.carrier_name,
 					entry.body,
+					entry.sent ? "true" : "false",
 					entry.read ? "true" : "false",
 					entry.seen ? "true" : "false");
 		}
@@ -126,7 +132,13 @@ public class AndroidSmsFetcher {
 				entry.type,
 				entry.date,
 				entry.address,
+				entry.card_number,
+				entry.card_slot,
+				entry.icc_id,
+				entry.device_name,
+				entry.carrier_name,
 				entry.body,
+				entry.sent ? "true" : "false",
 				entry.read ? "true" : "false",
 				entry.seen ? "true" : "false");
 

@@ -17,15 +17,12 @@ package fr.unix_experience.owncloud_sms.activities.remote_account;
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Telephony;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -36,7 +33,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import fr.unix_experience.owncloud_sms.R;
-import fr.unix_experience.owncloud_sms.engine.ASyncSMSRecovery;
+import fr.unix_experience.owncloud_sms.engine.ASyncSMSSender;
 import fr.unix_experience.owncloud_sms.engine.ConnectivityMonitor;
 
 public class RestoreMessagesActivity extends AppCompatActivity {

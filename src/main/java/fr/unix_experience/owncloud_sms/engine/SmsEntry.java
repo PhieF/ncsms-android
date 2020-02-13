@@ -23,7 +23,14 @@ public class SmsEntry {
 	public int type;
 	public boolean read;
 	public boolean seen;
+	public boolean sent;
 	public long date;
 	public String address;
 	public String body;
+	public String card_number;
+	public int card_slot;
+	public String device_name;
+	public String carrier_name;
+	public String icc_id;
+
 }
