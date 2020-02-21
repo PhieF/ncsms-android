@@ -31,6 +31,7 @@ import fr.unix_experience.owncloud_sms.enums.OCSyncErrorType;
 import fr.unix_experience.owncloud_sms.exceptions.OCSyncException;
 import fr.unix_experience.owncloud_sms.prefs.OCSMSSharedPrefs;
 import ncsmsgo.SmsBuffer;
+import ncsmsgo.SmsDeleteResponse;
 import ncsmsgo.SmsIDListResponse;
 import ncsmsgo.SmsMessagesResponse;
 import ncsmsgo.SmsPhoneListResponse;
@@ -153,4 +154,21 @@ public class OCSMSOwnCloudClient {
 	private static final String TAG = OCSMSOwnCloudClient.class.getSimpleName();
 
 
+	public void deleteMessage(String address, long date) {
+		address = address.replace("+", "%2B");
+		Pair<Integer, SmsDeleteResponse> response;
+		try {
+			response = _http.deleteMessage(address, date);
+		} catch (OCSyncException e) {
+			Log.e(OCSMSOwnCloudClient.TAG, "Request failed.");
+			return;
+		}
+
+		if (response.second == null) {
+			Log.e(OCSMSOwnCloudClient.TAG,
+					"Invalid response received from server, either messages or last_id field is missing.");
+			return;
+		}
+
+	}
 }

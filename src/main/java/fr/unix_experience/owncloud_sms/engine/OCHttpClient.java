@@ -27,6 +27,7 @@ import fr.unix_experience.owncloud_sms.enums.OCSyncErrorType;
 import fr.unix_experience.owncloud_sms.exceptions.OCSyncException;
 import fr.unix_experience.owncloud_sms.providers.AndroidVersionProvider;
 import ncsmsgo.SmsBuffer;
+import ncsmsgo.SmsDeleteResponse;
 import ncsmsgo.SmsHTTPClient;
 import ncsmsgo.SmsIDListResponse;
 import ncsmsgo.SmsMessagesResponse;
@@ -110,5 +111,12 @@ public class OCHttpClient {
 		int httpStatus = (int) _smsHttpClient.getLastHTTPStatus();
 		handleEarlyHTTPStatus(httpStatus);
 		return new Pair<>(httpStatus, smr);
+	}
+
+	Pair<Integer, SmsDeleteResponse> deleteMessage(String address, long date) throws OCSyncException {
+		SmsDeleteResponse spr = _smsHttpClient.doDeleteMessageCall(address, date);
+		int httpStatus = (int) _smsHttpClient.getLastHTTPStatus();
+		handleEarlyHTTPStatus(httpStatus);
+		return new Pair<>(httpStatus, spr);
 	}
 }
