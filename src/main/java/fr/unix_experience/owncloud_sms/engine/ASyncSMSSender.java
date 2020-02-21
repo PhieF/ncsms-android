@@ -98,12 +98,12 @@ public interface ASyncSMSSender {
 					String date = Long.toString(message.getDate());
 
 					// Ignore already existing messages
-					if (smsDataProvider.messageExists(address, body, date, mailbox_id)) {
-						publishProgress(nb);
-						continue;
-					}
-
 					if(message.getSent() == 0){
+						if (smsDataProvider.messageExists(address, body, date, mailbox_id)) {
+							publishProgress(nb);
+							continue;
+						}
+
 						stackProvider.addMessage(message);
 					}
 					nb++;
