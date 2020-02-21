@@ -37,6 +37,7 @@ public class SmsDataProvider extends ContentProvider {
 			"body",
 			"_id",
 			"type",
+			"sub_id",
 			//"length(address)" // For debug purposes
 	};
 

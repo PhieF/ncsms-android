@@ -29,7 +29,8 @@ public class SmsSendStackProvider {
     /*
         0: not sent,
         1: sent,
-        2: pending
+        2: pending,
+        3: sent but status not synced
 
      */
     private static final String	KEY_SENT = "sent";
@@ -106,6 +107,7 @@ public class SmsSendStackProvider {
         message.setMailbox(object.getInt("Mailbox"));
         message.setMessage(object.getString("Message"));
         message.setSent(object.getInt("Sent"));
+        message.setCardSlot(object.getLong("CardSlot"));
         message.setCardNumber(object.getString("CardNumber"));
         message.setIccId(object.getString("IccId"));
         message.setDeviceName(object.getString("DeviceName"));
@@ -144,6 +146,7 @@ public class SmsSendStackProvider {
         var1.append("Message:").append(JSONObject.quote(message.getMessage())).append(",");
         var1.append("Sent:").append(message.getSent()).append(",");
         var1.append("CardNumber:").append(JSONObject.quote(message.getCardNumber())).append(",");
+        var1.append("CardSlot:").append(message.getCardSlot()).append(",");
         var1.append("IccId:").append(JSONObject.quote(message.getIccId())).append(",");
         var1.append("DeviceName:").append(JSONObject.quote(message.getDeviceName())).append(",");
         var1.append("CarrierName:").append(JSONObject.quote(message.getCarrierName())).append(",");

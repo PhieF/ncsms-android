@@ -7,8 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.provider.Telephony;
 import android.telephony.SmsManager;
+import android.telephony.SubscriptionInfo;
+import android.telephony.SubscriptionManager;
 import android.util.Log;
 
 import java.util.List;
@@ -159,15 +162,35 @@ public interface ASyncSMSSender {
 		protected Void doInBackground(Void... params) {
 			SmsSendStackProvider stackProvider = SmsSendStackProvider.getInstance(_context);
 			List<SmsMessage> smsToSend = stackProvider.getMessagestoSend();
-
 			for (SmsMessage message : smsToSend) {
 				if(message.getSent() == 0){
+					int subscriptionId = -1;
+					if (Build.VERSION.SDK_INT>=22) {
+						SubscriptionManager subscriptionManager = (SubscriptionManager) _context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+						for(SubscriptionInfo i: subscriptionManager.getActiveSubscriptionInfoList()){
+							if((message.getCardNumber().isEmpty() || i.getNumber().equals(message.getCardNumber()))
+									&& (message.getCarrierName().isEmpty() || i.getCarrierName().equals(message.getCarrierName()))
+									&& (message.getCardSlot() == -1 || i.getSimSlotIndex() == message.getCardSlot())){
+								subscriptionId = i.getSubscriptionId();
+								break;
+							}
+						}
+
+					} else subscriptionId = -2;
 					Intent intent = new Intent();
 					intent.putExtra("sms", SmsSendStackProvider.smsMessageToJsonString(message));
+					intent.putExtra("account_type", _account.type);
+					intent.putExtra("account_name", _account.name);
 					intent.setClass(_context, SmsSenderIntentReceiver.class);
-					SmsManager smsManager = SmsManager.getDefault();
-					//smsManager.sendTextMessage(message.getAddress(), null, message.getMessage(),
-					//		PendingIntent.getBroadcast(_context, 0, intent,PendingIntent.FLAG_UPDATE_CURRENT), null);
+					SmsManager smsManager;
+					if(subscriptionId >=0)
+						smsManager = SmsManager.getSmsManagerForSubscriptionId(subscriptionId);
+					else if (subscriptionId == -2)
+						smsManager = SmsManager.getDefault();
+					else continue;
+					smsManager.sendTextMessage(message.getAddress(), null, message.getMessage(),
+							PendingIntent.getBroadcast(_context, 0, intent,PendingIntent.FLAG_UPDATE_CURRENT), null);
+
 					stackProvider.setSent(message, 2);
 				}
 

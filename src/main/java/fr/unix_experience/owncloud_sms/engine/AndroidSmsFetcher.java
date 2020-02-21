@@ -19,6 +19,9 @@ package fr.unix_experience.owncloud_sms.engine;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Build;
+import android.telephony.SubscriptionInfo;
+import android.telephony.SubscriptionManager;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -50,7 +53,7 @@ public class AndroidSmsFetcher {
 			for (int idx = 0; idx < c.getColumnCount(); idx++) {
 				handleProviderColumn(c, idx, entry);
 			}
-
+			entry.device_name = Build.MODEL;
 			// Mailbox ID is required by server
 			entry.mailboxId = mbID.ordinal();
 			smsBuffer.push(entry.id,
@@ -112,6 +115,7 @@ public class AndroidSmsFetcher {
 		// We create a list of strings to store results
 		SmsEntry entry = new SmsEntry();
 		SmsBuffer results = new SmsBuffer();
+		entry.device_name = Build.MODEL;
 
 		Integer mboxId = -1;
 		for (int idx = 0; idx < c.getColumnCount(); idx++) {
@@ -126,6 +130,7 @@ public class AndroidSmsFetcher {
 		* mboxId is greater than server mboxId by 1 because types
 		* aren't indexed in the same mean
 		*/
+		entry.sent = true;
 		entry.mailboxId = mboxId - 1;
 		results.push(entry.id,
 				mbID.ordinal(),
@@ -183,6 +188,19 @@ public class AndroidSmsFetcher {
 		switch (colName) {
 			case "_id":
 				entry.id = c.getInt(idx);
+				break;
+			case "sub_id":
+				if(Build.VERSION.SDK_INT>=22) {
+					SubscriptionManager subscriptionManager = (SubscriptionManager) _context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
+					SubscriptionInfo info = subscriptionManager.getActiveSubscriptionInfo(c.getInt(idx));
+					if(info!=null) {
+						entry.card_number = info.getNumber();
+						entry.card_slot = info.getSimSlotIndex();
+						entry.carrier_name = info.getCarrierName().toString();
+					} else
+						entry.card_number = "";
+				}
+				else entry.card_number = "";
 				break;
 			case "type":
 				entry.type = c.getInt(idx);
